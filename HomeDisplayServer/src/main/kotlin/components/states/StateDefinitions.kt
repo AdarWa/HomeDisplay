@@ -25,7 +25,7 @@ data class HookStateDefinition(
 ) : StateDefinition() {
 
     init {
-        require(isValidEntityId(entityId))
+        require(isValidEntityId(entityId)) { "entityId must be a valid Home Assistant id, got $entityId" }
     }
 
     override fun computeInternalId(): String = entityId
