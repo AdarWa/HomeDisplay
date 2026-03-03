@@ -24,15 +24,13 @@ object AnySerializer : KSerializer<Any> {
 
     override fun deserialize(decoder: Decoder): Any {
         val input = decoder as? JsonDecoder ?: throw Exception("Only JSON supported")
-        val element = input.decodeJsonElement()
-        return when (element) {
+        return when (val element = input.decodeJsonElement()) {
             is JsonPrimitive -> {
                 if (element.isString) element.content
                 else element.booleanOrNull ?: element.longOrNull ?: element.doubleOrNull ?: element.content
             }
             is JsonArray -> element.map { it.toString() }
             is JsonObject -> element.toString()
-            else -> element.toString()
         }
     }
 }
