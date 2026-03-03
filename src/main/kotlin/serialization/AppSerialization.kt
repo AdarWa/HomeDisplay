@@ -4,8 +4,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.contextual
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.serializer
+import net.adarw.common.decoders.AnySerializer
 import kotlin.reflect.KClass
 
 object AppSerialization {
@@ -30,8 +32,11 @@ object AppSerialization {
                 registrations.forEach { reg ->
                     registerPolymorphic(reg)
                 }
+                contextual(AnySerializer)
             }
             classDiscriminator = "type"
+            ignoreUnknownKeys = true
+            coerceInputValues = true
             prettyPrint = true
         }
     }

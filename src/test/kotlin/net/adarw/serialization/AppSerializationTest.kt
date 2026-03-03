@@ -1,15 +1,10 @@
-package net.adarw
+package net.adarw.serialization
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.encodeToString
-import net.adarw.serialization.AppSerialization
-import net.adarw.serialization.RegisterPolymorphic
-import net.adarw.serialization.autoRegisterSerialization
+import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-
 
 interface TestWidget
 
@@ -17,16 +12,11 @@ interface TestWidget
 @SerialName("SmartWidget")
 data class SmartWidget(val version: Int) : TestWidget
 
-@RegisterPolymorphic
-fun registerTestWidgets() {
-    AppSerialization.register<TestWidget, SmartWidget>()
-}
-
 class AutoRegistrationTest {
 
     @Test
     fun `test autoRegisterSerialization executes annotated functions successfully`() {
-        autoRegisterSerialization()
+        AppSerialization.register<TestWidget, SmartWidget>()
 
         val originalWidget: TestWidget = SmartWidget(version = 42)
 
