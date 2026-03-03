@@ -1,22 +1,37 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '2.3.0'
+    id 'org.jetbrains.kotlin.multiplatform' version '2.3.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.3.0'
 }
 
 group = 'net.adarw'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
-}
-
 kotlin {
-    jvmToolchain(17)
-}
+    jvm {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
+        }
+        testRuns["test"].executionTask.configure {
+            useJUnitPlatform()
+        }
+    }
 
-test {
-    useJUnitPlatform()
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation kotlin('test')
+            }
+        }
+    }
 }
