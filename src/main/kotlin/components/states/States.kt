@@ -22,3 +22,8 @@ data class InternalState(
     override val definition: InternalStateDefinition,
     override val value: StateValue
 ) : State()
+
+fun StateDefinition.asState(value: StateValue) = when(this) {
+    is InternalStateDefinition -> InternalState(this, value)
+    is HookStateDefinition -> HookState(this, value)
+}
