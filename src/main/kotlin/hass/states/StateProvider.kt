@@ -1,8 +1,8 @@
 package net.adarw.hass.states
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Contextual
 import net.adarw.components.states.InternalState
 
 @Serializable

@@ -9,6 +9,5 @@ object StateManager {
 
     fun getHAState(entityId: String): HAState = stateProvider.getState(entityId)
 
-    fun getInternalState(internalStateId: String): InternalState =
-
+    fun getInternalState(internalStateId: String): InternalState = stateProvider.getInternalState(internalStateId)
 }
