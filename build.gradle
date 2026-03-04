@@ -1,0 +1,67 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '2.3.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.3.0'
+    id "com.google.protobuf" version "0.9.6"
+}
+
+group = 'net.adarw'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+    implementation 'com.google.protobuf:protobuf-java:4.28.2'
+    implementation 'com.google.protobuf:protobuf-kotlin:4.28.2'
+
+    testImplementation "org.jetbrains.kotlin:kotlin-test"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.0"
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.25.1'
+    }
+
+    plugins {
+        nanopb {
+            path = '/opt/nanopb-0.4.9.1-linux-x86/generator-bin/protoc-gen-nanopb'
+        }
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                // 1. Generate the underlying Java classes (REQUIRED for Kotlin DSL)
+                java {}
+
+                // 2. Generate the Kotlin DSL wrappers
+                kotlin {}
+            }
+            task.plugins {
+                nanopb {
+                    // Generates .pb.c and .pb.h files for your embedded side
+                }
+            }
+        }
+    }
+}
