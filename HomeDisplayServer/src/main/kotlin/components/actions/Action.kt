@@ -86,8 +86,7 @@ data class DecrementValueAction(
     }
 
     override fun perform() {
-        val current = StateManager.getState(state).value
-        val newValue = when (current) {
+        val newValue = when (val current = StateManager.getState(state).value) {
             is StateValue.IntValue -> StateValue.IntValue(current.data - (amount as StateValue.IntValue).data)
             is StateValue.FloatValue -> StateValue.FloatValue(current.data - (amount as StateValue.FloatValue).data)
             else -> error("DecrementValueAction requires int or float state, got ${state.dataType}")
@@ -115,8 +114,7 @@ data class MultiplyValueAction(
     }
 
     override fun perform() {
-        val current = StateManager.getState(state).value
-        val newValue = when (current) {
+        val newValue = when (val current = StateManager.getState(state).value) {
             is StateValue.IntValue -> StateValue.IntValue(current.data * (factor as StateValue.IntValue).data)
             is StateValue.FloatValue -> StateValue.FloatValue(current.data * (factor as StateValue.FloatValue).data)
             else -> error("MultiplyValueAction requires int or float state, got ${state.dataType}")
@@ -174,8 +172,7 @@ data class ClampValueAction(
     }
 
     override fun perform() {
-        val current = StateManager.getState(state).value
-        val clamped = when (current) {
+        val clamped = when (val current = StateManager.getState(state).value) {
             is StateValue.IntValue -> clampInt(current)
             is StateValue.FloatValue -> clampFloat(current)
             else -> error("ClampValueAction requires int or float state, got ${state.dataType}")
