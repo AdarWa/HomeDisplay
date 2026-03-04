@@ -12,10 +12,6 @@ jobs:
     permissions:
       contents: read
 
-    defaults:
-      run:
-        working-directory: HomeDisplayServer
-
     steps:
     - uses: actions/checkout@v4
 
