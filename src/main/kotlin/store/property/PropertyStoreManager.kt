@@ -5,6 +5,7 @@ import net.adarw.components.states.InternalStateDefinition
 import net.adarw.components.states.StateDefinition
 import net.adarw.components.states.StateType
 import net.adarw.components.states.toStateValue
+import net.adarw.store.DatabaseManager
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
@@ -16,13 +17,7 @@ import org.jetbrains.exposed.v1.jdbc.upsert
 object PropertyStoreManager {
 
     init {
-        Database.connect(
-            url = "jdbc:h2:file:./data/propertystore;DB_CLOSE_DELAY=-1",
-            driver = "org.h2.Driver",
-            user = "homedisplay",
-            password = ""
-        )
-
+        DatabaseManager.instance
         transaction {
             SchemaUtils.create(PropertyStore)
         }
@@ -37,7 +32,7 @@ object PropertyStoreManager {
             is Float -> StateType.FLOAT
             is Boolean -> StateType.BOOLEAN
             is String -> StateType.STRING
-            else -> throw IllegalArgumentException("Unsupported data type")
+            else -> error("Unsupported data type")
         }
 
         transaction {
