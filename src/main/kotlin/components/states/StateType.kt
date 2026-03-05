@@ -13,21 +13,24 @@ enum class StateType(val dType: KClass<*>) {
 
 @Serializable
 sealed interface StateValue {
+
+    val data: Any
+
     @Serializable
     @SerialName("int")
-    data class IntValue(val data: Int) : StateValue
+    data class IntValue(override val data: Int) : StateValue
 
     @Serializable
     @SerialName("float")
-    data class FloatValue(val data: Float) : StateValue
+    data class FloatValue(override val data: Float) : StateValue
 
     @Serializable
     @SerialName("string")
-    data class StringValue(val data: String) : StateValue
+    data class StringValue(override val data: String) : StateValue
 
     @Serializable
     @SerialName("boolean")
-    data class BooleanValue(val data: Boolean) : StateValue
+    data class BooleanValue(override val data: Boolean) : StateValue
 }
 
 fun Int.toIntStateValue(): StateValue.IntValue = StateValue.IntValue(this)
@@ -47,4 +50,12 @@ fun String.toStateValue(): StateValue {
     if (floatValue != null) return StateValue.FloatValue(floatValue)
 
     return StateValue.StringValue(this)
+}
+
+fun Any.toStateValue() : StateValue = when(this) {
+    is Int -> StateValue.IntValue(this)
+    is Float -> StateValue.FloatValue(this)
+    is String -> StateValue.StringValue(this)
+    is Boolean -> StateValue.BooleanValue(this)
+    else -> error("this must be a valid state value(int,float,string,boolean)")
 }

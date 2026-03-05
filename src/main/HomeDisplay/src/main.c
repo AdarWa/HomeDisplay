@@ -14,7 +14,7 @@
 #include "lcd/lcd.h"
 #include "lcd/touch.h"
 
-static const char* TAG = "demo";
+static const char* TAG = "main";
 
 lv_obj_t* lbl_counter;
 
