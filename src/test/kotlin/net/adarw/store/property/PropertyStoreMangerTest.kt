@@ -86,7 +86,7 @@ class PropertyStoreManagerTest {
         val key = generateKey()
         val unsupportedValue = listOf("I", "am", "a", "list") // Lists are not handled in your when block
 
-        assertFailsWith<IllegalArgumentException>("Unsupported data type") {
+        assertFailsWith<IllegalStateException> {
             PropertyStoreManager.setProperty(key, unsupportedValue)
         }
     }

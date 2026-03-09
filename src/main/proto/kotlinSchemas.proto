@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+
+// serial name 'net.adarw.rpc.definitions.messages.RegisterMessage'
+message RegisterMessage {
+  required int32 statusCode = 1;
+  required int32 senderId = 2;
+  required string serialId = 3;
+}

@@ -14,6 +14,7 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-protobuf"
     implementation 'com.google.protobuf:protobuf-java:4.28.2'
     implementation 'com.google.protobuf:protobuf-kotlin:4.28.2'
     implementation("io.github.davidepianca98:kmqtt-common-jvm:1.0.0")
@@ -41,6 +42,20 @@ test {
 }
 
 def skipNanopb = project.hasProperty('skipNanopb')
+
+tasks.register('generateKotlinProtoSchema', JavaExec) {
+    // Ensure Kotlin classes are compiled before trying to run the generator
+    dependsOn 'compileKotlin'
+
+    group = 'build'
+    description = 'Generates Protobuf schema from @Serializable Kotlin classes'
+
+    // Point it to your compiled classes and dependencies
+    classpath = sourceSets.main.runtimeClasspath
+
+    // The fully qualified name of your Kotlin script (file name with 'Kt' appended)
+    mainClass = 'net.adarw.build.SchemaGeneratorKt'
+}
 
 protobuf {
     protoc {
