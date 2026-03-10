@@ -2,6 +2,8 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '2.3.0'
     id 'org.jetbrains.kotlin.plugin.serialization' version '2.3.0'
     id "com.google.protobuf" version "0.9.6"
+    id 'com.gradleup.shadow' version '9.3.2'
+    id 'application'
 }
 
 group = 'net.adarw'
@@ -9,6 +11,7 @@ version = '1.0'
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -85,4 +88,8 @@ protobuf {
             }
         }
     }
+}
+
+application {
+    mainClass = 'net.adarw.MainKt'
 }

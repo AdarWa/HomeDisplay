@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="runContainerizedApp" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="commandLineOptions" value="--build" />
+        <option name="services">
+          <list>
+            <option value="app" />
+            <option value="mosquitto" />
+          </list>
+        </option>
+        <option name="sourceFilePath" value="docker-compose.yml" />
+        <option name="upDetach" value="false" />
+      </settings>
+    </deployment>
+    <method v="2">
+      <option name="DeactivateBeforeRunTask">
+        <option name="dataSourceId" value="5f59d6b2-1d11-4526-99c9-b6449d76d103" />
+      </option>
+    </method>
+  </configuration>
+</component>
