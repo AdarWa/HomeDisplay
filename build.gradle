@@ -107,6 +107,8 @@ spotless {
         endWithNewline()
     }
     java {
+        targetExclude('build/')
+
         // use AOSP style for 4-character wide indents
         googleJavaFormat().aosp()
 
