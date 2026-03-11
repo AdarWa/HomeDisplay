@@ -12,6 +12,7 @@ version = '1.0'
 repositories {
     mavenCentral()
     gradlePluginPortal()
+    maven { url = "https://repo.repsy.io/mvn/chrynan/public" }
 }
 
 dependencies {
