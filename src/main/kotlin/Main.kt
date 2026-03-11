@@ -1,6 +1,3 @@
 package net.adarw
 
-
-fun main(){
-
-}
+fun main() {}

@@ -21,25 +21,28 @@ sealed class StateDefinition {
 @SerialName("hook")
 data class HookStateDefinition(
     val entityId: String,
-    override val dataType: StateType
+    override val dataType: StateType,
 ) : StateDefinition() {
-
     init {
-        require(isValidEntityId(entityId)) { "entityId must be a valid Home Assistant id, got $entityId" }
+        require(isValidEntityId(entityId)) {
+            "entityId must be a valid Home Assistant id, got $entityId"
+        }
     }
 
     override fun computeInternalId(): String = entityId
 
-    override fun fetchLatestValue() = StateManager.getHAState(entityId).state.toStateValue()
+    override fun fetchLatestValue() =
+        StateManager.getHAState(entityId).state.toStateValue()
 }
 
 @Serializable
 @SerialName("internal")
 data class InternalStateDefinition(
     val id: String,
-    override val dataType: StateType
+    override val dataType: StateType,
 ) : StateDefinition() {
     override fun computeInternalId(): String = id
 
-    override fun fetchLatestValue() = StateManager.getInternalState(computeInternalId()).value
+    override fun fetchLatestValue() =
+        StateManager.getInternalState(computeInternalId()).value
 }

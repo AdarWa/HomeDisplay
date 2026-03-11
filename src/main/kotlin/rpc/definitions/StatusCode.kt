@@ -47,11 +47,12 @@ enum class StatusCode(val code: Int) {
     GATEWAY_TIMEOUT(504);
 
     fun isSuccess(): Boolean = code in 200..299
+
     fun isClientError(): Boolean = code in 400..499
+
     fun isServerError(): Boolean = code in 500..599
 
     companion object {
-        fun fromInt(value: Int): StatusCode? =
-            entries.find { it.code == value }
+        fun fromInt(value: Int): StatusCode? = entries.find { it.code == value }
     }
 }

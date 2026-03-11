@@ -7,12 +7,12 @@ import net.adarw.components.states.StateDefinition
 import net.adarw.components.states.StateValue
 
 object StateManager {
-
     private val stateProvider = STATE_PROVIDER
 
     fun getHAState(entityId: String): HAState = stateProvider.getState(entityId)
 
-    fun getInternalState(internalStateId: String): InternalState = stateProvider.getInternalState(internalStateId)
+    fun getInternalState(internalStateId: String): InternalState =
+        stateProvider.getInternalState(internalStateId)
 
     fun getState(state: StateDefinition): State = TODO()
 

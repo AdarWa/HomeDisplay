@@ -14,10 +14,8 @@ sealed class Action {
 
 @Serializable
 @SerialName("setValue")
-data class SetValueAction(
-    val state: StateDefinition,
-    val value: StateValue
-) : Action() {
+data class SetValueAction(val state: StateDefinition, val value: StateValue) :
+    Action() {
     override fun perform() {
         StateManager.setState(state, value)
     }
@@ -25,11 +23,11 @@ data class SetValueAction(
 
 @Serializable
 @SerialName("toggleValue")
-data class ToggleValueAction(
-    val state: StateDefinition
-) : Action() {
+data class ToggleValueAction(val state: StateDefinition) : Action() {
     init {
-        require(state.dataType == StateType.BOOLEAN) { "Toggleable state must be of type boolean, got ${state.dataType}" }
+        require(state.dataType == StateType.BOOLEAN) {
+            "Toggleable state must be of type boolean, got ${state.dataType}"
+        }
     }
 
     override fun perform() {
@@ -42,15 +40,19 @@ data class ToggleValueAction(
 @SerialName("incrementValue")
 data class IncrementValueAction(
     val state: StateDefinition,
-    val amount: StateValue
+    val amount: StateValue,
 ) : Action() {
     init {
-        require(state.dataType == StateType.INT || state.dataType == StateType.FLOAT) {
+        require(
+            state.dataType == StateType.INT || state.dataType == StateType.FLOAT
+        ) {
             "Incrementable state must be of type int or float, got ${state.dataType}"
         }
         require(
-            (state.dataType == StateType.INT && amount is StateValue.IntValue) ||
-                (state.dataType == StateType.FLOAT && amount is StateValue.FloatValue)
+            (state.dataType == StateType.INT &&
+                amount is StateValue.IntValue) ||
+                (state.dataType == StateType.FLOAT &&
+                    amount is StateValue.FloatValue)
         ) {
             "Increment amount must match state type ${state.dataType}"
         }
@@ -58,11 +60,26 @@ data class IncrementValueAction(
 
     override fun perform() {
         val current = StateManager.getState(state).value
-        val newValue = when (current) {
-            is StateValue.IntValue -> StateValue.IntValue(current.data + (amount as StateValue.IntValue).data)
-            is StateValue.FloatValue -> StateValue.FloatValue(current.data + (amount as StateValue.FloatValue).data)
-            else -> error("IncrementValueAction requires int or float state, got ${state.dataType}")
-        }
+        val newValue =
+            when (current) {
+                is StateValue.IntValue -> {
+                    StateValue.IntValue(
+                        current.data + (amount as StateValue.IntValue).data
+                    )
+                }
+
+                is StateValue.FloatValue -> {
+                    StateValue.FloatValue(
+                        current.data + (amount as StateValue.FloatValue).data
+                    )
+                }
+
+                else -> {
+                    error(
+                        "IncrementValueAction requires int or float state, got ${state.dataType}"
+                    )
+                }
+            }
         StateManager.setState(state, newValue)
     }
 }
@@ -71,26 +88,45 @@ data class IncrementValueAction(
 @SerialName("decrementValue")
 data class DecrementValueAction(
     val state: StateDefinition,
-    val amount: StateValue
+    val amount: StateValue,
 ) : Action() {
     init {
-        require(state.dataType == StateType.INT || state.dataType == StateType.FLOAT) {
+        require(
+            state.dataType == StateType.INT || state.dataType == StateType.FLOAT
+        ) {
             "Decrementable state must be of type int or float, got ${state.dataType}"
         }
         require(
-            (state.dataType == StateType.INT && amount is StateValue.IntValue) ||
-                (state.dataType == StateType.FLOAT && amount is StateValue.FloatValue)
+            (state.dataType == StateType.INT &&
+                amount is StateValue.IntValue) ||
+                (state.dataType == StateType.FLOAT &&
+                    amount is StateValue.FloatValue)
         ) {
             "Decrement amount must match state type ${state.dataType}"
         }
     }
 
     override fun perform() {
-        val newValue = when (val current = StateManager.getState(state).value) {
-            is StateValue.IntValue -> StateValue.IntValue(current.data - (amount as StateValue.IntValue).data)
-            is StateValue.FloatValue -> StateValue.FloatValue(current.data - (amount as StateValue.FloatValue).data)
-            else -> error("DecrementValueAction requires int or float state, got ${state.dataType}")
-        }
+        val newValue =
+            when (val current = StateManager.getState(state).value) {
+                is StateValue.IntValue -> {
+                    StateValue.IntValue(
+                        current.data - (amount as StateValue.IntValue).data
+                    )
+                }
+
+                is StateValue.FloatValue -> {
+                    StateValue.FloatValue(
+                        current.data - (amount as StateValue.FloatValue).data
+                    )
+                }
+
+                else -> {
+                    error(
+                        "DecrementValueAction requires int or float state, got ${state.dataType}"
+                    )
+                }
+            }
         StateManager.setState(state, newValue)
     }
 }
@@ -99,35 +135,52 @@ data class DecrementValueAction(
 @SerialName("multiplyValue")
 data class MultiplyValueAction(
     val state: StateDefinition,
-    val factor: StateValue
+    val factor: StateValue,
 ) : Action() {
     init {
-        require(state.dataType == StateType.INT || state.dataType == StateType.FLOAT) {
+        require(
+            state.dataType == StateType.INT || state.dataType == StateType.FLOAT
+        ) {
             "Multipliable state must be of type int or float, got ${state.dataType}"
         }
         require(
-            (state.dataType == StateType.INT && factor is StateValue.IntValue) ||
-                (state.dataType == StateType.FLOAT && factor is StateValue.FloatValue)
+            (state.dataType == StateType.INT &&
+                factor is StateValue.IntValue) ||
+                (state.dataType == StateType.FLOAT &&
+                    factor is StateValue.FloatValue)
         ) {
             "Multiplication factor must match state type ${state.dataType}"
         }
     }
 
     override fun perform() {
-        val newValue = when (val current = StateManager.getState(state).value) {
-            is StateValue.IntValue -> StateValue.IntValue(current.data * (factor as StateValue.IntValue).data)
-            is StateValue.FloatValue -> StateValue.FloatValue(current.data * (factor as StateValue.FloatValue).data)
-            else -> error("MultiplyValueAction requires int or float state, got ${state.dataType}")
-        }
+        val newValue =
+            when (val current = StateManager.getState(state).value) {
+                is StateValue.IntValue -> {
+                    StateValue.IntValue(
+                        current.data * (factor as StateValue.IntValue).data
+                    )
+                }
+
+                is StateValue.FloatValue -> {
+                    StateValue.FloatValue(
+                        current.data * (factor as StateValue.FloatValue).data
+                    )
+                }
+
+                else -> {
+                    error(
+                        "MultiplyValueAction requires int or float state, got ${state.dataType}"
+                    )
+                }
+            }
         StateManager.setState(state, newValue)
     }
 }
 
 @Serializable
 @SerialName("composite")
-data class CompositeAction(
-    val actions: List<Action>
-) : Action() {
+data class CompositeAction(val actions: List<Action>) : Action() {
     override fun perform() {
         actions.forEach { it.perform() }
     }
@@ -135,9 +188,7 @@ data class CompositeAction(
 
 @Serializable
 @SerialName("delay")
-data class DelayAction(
-    val durationMs: Long
-) : Action() {
+data class DelayAction(val durationMs: Long) : Action() {
     init {
         require(durationMs >= 0) { "Delay duration must be non-negative" }
     }
@@ -152,31 +203,45 @@ data class DelayAction(
 data class ClampValueAction(
     val state: StateDefinition,
     val min: StateValue? = null,
-    val max: StateValue? = null
+    val max: StateValue? = null,
 ) : Action() {
     init {
-        require(state.dataType == StateType.INT || state.dataType == StateType.FLOAT) {
+        require(
+            state.dataType == StateType.INT || state.dataType == StateType.FLOAT
+        ) {
             "Clampable state must be of type int or float, got ${state.dataType}"
         }
         require(min != null || max != null) { "Clamp requires min or max" }
         require(
             min == null ||
-                (state.dataType == StateType.INT && min is StateValue.IntValue) ||
-                (state.dataType == StateType.FLOAT && min is StateValue.FloatValue)
-        ) { "Clamp min must match state type ${state.dataType}" }
+                (state.dataType == StateType.INT &&
+                    min is StateValue.IntValue) ||
+                (state.dataType == StateType.FLOAT &&
+                    min is StateValue.FloatValue)
+        ) {
+            "Clamp min must match state type ${state.dataType}"
+        }
         require(
             max == null ||
-                (state.dataType == StateType.INT && max is StateValue.IntValue) ||
-                (state.dataType == StateType.FLOAT && max is StateValue.FloatValue)
-        ) { "Clamp max must match state type ${state.dataType}" }
+                (state.dataType == StateType.INT &&
+                    max is StateValue.IntValue) ||
+                (state.dataType == StateType.FLOAT &&
+                    max is StateValue.FloatValue)
+        ) {
+            "Clamp max must match state type ${state.dataType}"
+        }
     }
 
     override fun perform() {
-        val clamped = when (val current = StateManager.getState(state).value) {
-            is StateValue.IntValue -> clampInt(current)
-            is StateValue.FloatValue -> clampFloat(current)
-            else -> error("ClampValueAction requires int or float state, got ${state.dataType}")
-        }
+        val clamped =
+            when (val current = StateManager.getState(state).value) {
+                is StateValue.IntValue -> clampInt(current)
+                is StateValue.FloatValue -> clampFloat(current)
+                else ->
+                    error(
+                        "ClampValueAction requires int or float state, got ${state.dataType}"
+                    )
+            }
         StateManager.setState(state, clamped)
     }
 
@@ -184,23 +249,27 @@ data class ClampValueAction(
         val minValue = (min as? StateValue.IntValue)?.data
         val maxValue = (max as? StateValue.IntValue)?.data
         val value = current.data
-        val clamped = when {
-            minValue != null && value < minValue -> minValue
-            maxValue != null && value > maxValue -> maxValue
-            else -> value
-        }
+        val clamped =
+            when {
+                minValue != null && value < minValue -> minValue
+                maxValue != null && value > maxValue -> maxValue
+                else -> value
+            }
         return StateValue.IntValue(clamped)
     }
 
-    private fun clampFloat(current: StateValue.FloatValue): StateValue.FloatValue {
+    private fun clampFloat(
+        current: StateValue.FloatValue
+    ): StateValue.FloatValue {
         val minValue = (min as? StateValue.FloatValue)?.data
         val maxValue = (max as? StateValue.FloatValue)?.data
         val value = current.data
-        val clamped = when {
-            minValue != null && value < minValue -> minValue
-            maxValue != null && value > maxValue -> maxValue
-            else -> value
-        }
+        val clamped =
+            when {
+                minValue != null && value < minValue -> minValue
+                maxValue != null && value > maxValue -> maxValue
+                else -> value
+            }
         return StateValue.FloatValue(clamped)
     }
 }
@@ -209,7 +278,7 @@ data class ClampValueAction(
 @SerialName("copyValue")
 data class CopyValueAction(
     val source: StateDefinition,
-    val target: StateDefinition
+    val target: StateDefinition,
 ) : Action() {
     init {
         require(source.dataType == target.dataType) {

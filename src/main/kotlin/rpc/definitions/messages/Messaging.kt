@@ -10,5 +10,5 @@ sealed class RPCResponse : RPCMessage()
 data class RPCError(
     override val statusCode: Int,
     override val senderId: Int,
-    val cause: String
+    val cause: String,
 ) : RPCMessage()

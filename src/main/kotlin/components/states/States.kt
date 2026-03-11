@@ -13,17 +13,18 @@ sealed class State {
 @SerialName("hook")
 data class HookState(
     override val definition: HookStateDefinition,
-    override val value: StateValue
+    override val value: StateValue,
 ) : State()
 
 @Serializable
 @SerialName("internal")
 data class InternalState(
     override val definition: InternalStateDefinition,
-    override val value: StateValue
+    override val value: StateValue,
 ) : State()
 
-fun StateDefinition.asState(value: StateValue) = when(this) {
-    is InternalStateDefinition -> InternalState(this, value)
-    is HookStateDefinition -> HookState(this, value)
-}
+fun StateDefinition.asState(value: StateValue) =
+    when (this) {
+        is InternalStateDefinition -> InternalState(this, value)
+        is HookStateDefinition -> HookState(this, value)
+    }

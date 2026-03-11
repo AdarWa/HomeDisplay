@@ -1,13 +1,13 @@
 package net.adarw.store.property
 
+import java.util.*
+import kotlin.test.*
 import net.adarw.components.states.InternalState
 import net.adarw.components.states.InternalStateDefinition
 import net.adarw.components.states.StateType
 import net.adarw.components.states.StateValue
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.TestInstance
-import java.util.*
-import kotlin.test.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PropertyStoreManagerTest {
@@ -24,9 +24,7 @@ class PropertyStoreManagerTest {
     @AfterAll
     fun cleanupAfterAll() {
         // Safely remove only the properties created during this test run
-        testKeys.forEach { key ->
-            PropertyStoreManager.deleteProperty(key)
-        }
+        testKeys.forEach { key -> PropertyStoreManager.deleteProperty(key) }
     }
 
     @Test
@@ -37,7 +35,11 @@ class PropertyStoreManagerTest {
         PropertyStoreManager.setProperty(key, expectedValue)
         val actualValue = PropertyStoreManager.getProperty(key)
 
-        assertEquals(expectedValue, actualValue, "String property should match the stored value.")
+        assertEquals(
+            expectedValue,
+            actualValue,
+            "String property should match the stored value.",
+        )
     }
 
     @Test
@@ -48,7 +50,11 @@ class PropertyStoreManagerTest {
         PropertyStoreManager.setProperty(key, expectedValue)
         val actualValue = PropertyStoreManager.getProperty(key)
 
-        assertEquals(expectedValue, actualValue, "Int property should match the stored value.")
+        assertEquals(
+            expectedValue,
+            actualValue,
+            "Int property should match the stored value.",
+        )
     }
 
     @Test
@@ -59,7 +65,11 @@ class PropertyStoreManagerTest {
         PropertyStoreManager.setProperty(key, expectedValue)
         val actualValue = PropertyStoreManager.getProperty(key)
 
-        assertEquals(expectedValue, actualValue, "Float property should match the stored value.")
+        assertEquals(
+            expectedValue,
+            actualValue,
+            "Float property should match the stored value.",
+        )
     }
 
     @Test
@@ -70,7 +80,11 @@ class PropertyStoreManagerTest {
         PropertyStoreManager.setProperty(key, expectedValue)
         val actualValue = PropertyStoreManager.getProperty(key)
 
-        assertEquals(expectedValue, actualValue, "Boolean property should match the stored value.")
+        assertEquals(
+            expectedValue,
+            actualValue,
+            "Boolean property should match the stored value.",
+        )
     }
 
     @Test
@@ -84,7 +98,13 @@ class PropertyStoreManagerTest {
     @Test
     fun `setProperty should throw IllegalArgumentException for unsupported types`() {
         val key = generateKey()
-        val unsupportedValue = listOf("I", "am", "a", "list") // Lists are not handled in your when block
+        val unsupportedValue =
+            listOf(
+                "I",
+                "am",
+                "a",
+                "list",
+            ) // Lists are not handled in your when block
 
         assertFailsWith<IllegalStateException> {
             PropertyStoreManager.setProperty(key, unsupportedValue)
@@ -94,11 +114,13 @@ class PropertyStoreManagerTest {
     @Test
     fun `setInternalState and getInternalState should store and retrieve complex state`() {
         val definitionId = generateKey()
-        val dummyDefinition = InternalStateDefinition(definitionId, StateType.INT)
+        val dummyDefinition =
+            InternalStateDefinition(definitionId, StateType.INT)
         val dummyState = InternalState(dummyDefinition, StateValue.IntValue(5))
 
         PropertyStoreManager.setInternalState(dummyState)
-        val retrievedState = PropertyStoreManager.getInternalState(dummyDefinition)
+        val retrievedState =
+            PropertyStoreManager.getInternalState(dummyDefinition)
 
         assertEquals(dummyState.value.data, retrievedState.value.data)
     }
@@ -113,8 +135,14 @@ class PropertyStoreManagerTest {
 
         val deleteResult = PropertyStoreManager.deleteProperty(key)
 
-        assertTrue(deleteResult, "deleteProperty should return true when a property is successfully deleted.")
-        assertNull(PropertyStoreManager.getProperty(key), "getProperty should return null after the property is deleted.")
+        assertTrue(
+            deleteResult,
+            "deleteProperty should return true when a property is successfully deleted.",
+        )
+        assertNull(
+            PropertyStoreManager.getProperty(key),
+            "getProperty should return null after the property is deleted.",
+        )
     }
 
     @Test
@@ -123,6 +151,9 @@ class PropertyStoreManagerTest {
 
         val deleteResult = PropertyStoreManager.deleteProperty(key)
 
-        assertFalse(deleteResult, "deleteProperty should return false when the key does not exist.")
+        assertFalse(
+            deleteResult,
+            "deleteProperty should return false when the key does not exist.",
+        )
     }
 }

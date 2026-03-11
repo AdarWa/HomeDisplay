@@ -19,17 +19,24 @@ object AnySerializer : KSerializer<Any> {
     override val descriptor: SerialDescriptor =
         ContextualSerializer(Any::class, null, emptyArray()).descriptor
 
-    override fun serialize(encoder: Encoder, value: Any) {
-    }
+    override fun serialize(encoder: Encoder, value: Any) {}
 
     override fun deserialize(decoder: Decoder): Any {
-        val input = decoder as? JsonDecoder ?: throw Exception("Only JSON supported")
+        val input =
+            decoder as? JsonDecoder ?: throw Exception("Only JSON supported")
         return when (val element = input.decodeJsonElement()) {
-            is JsonPrimitive -> {
-                if (element.isString) element.content
-                else element.booleanOrNull ?: element.longOrNull ?: element.doubleOrNull ?: element.content
-            }
+            is JsonPrimitive ->
+                if (element.isString) {
+                    element.content
+                } else {
+                    element.booleanOrNull
+                        ?: element.longOrNull
+                        ?: element.doubleOrNull
+                        ?: element.content
+                }
+
             is JsonArray -> element.map { it.toString() }
+
             is JsonObject -> element.toString()
         }
     }

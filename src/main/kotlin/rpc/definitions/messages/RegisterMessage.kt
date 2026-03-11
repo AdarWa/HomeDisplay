@@ -8,12 +8,12 @@ import net.adarw.build.ProtoGenerate
 data class RegisterMessage(
     override val statusCode: Int,
     override val senderId: Int,
-    val serialId: String
+    val serialId: String,
 ) : RPCMessage()
 
 @ProtoGenerate
 @Serializable
 data class RegisterResponse(
     override val statusCode: Int,
-    override val senderId: Int
+    override val senderId: Int,
 ) : RPCResponse()
