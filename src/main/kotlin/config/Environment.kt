@@ -5,8 +5,8 @@ import kotlin.text.isEmpty
 import kotlin.text.split
 
 data class Credentials(
-    val user: String,
-    val password: String,
+    val user: String?,
+    val password: String?,
     val isAuthorized: Boolean,
 ) {
     companion object {
@@ -27,7 +27,7 @@ data class Credentials(
                     true,
                 )
             }
-            return Credentials("", "", false)
+            return Credentials(null, null, false)
         }
     }
 }
@@ -48,4 +48,6 @@ object Environment {
     val MQTT_BROKER = connectionUri.host
     val MQTT_PORT = connectionUri.port
     val MQTT_AUTH = Credentials.fromAuthorityString(connectionUri.userInfo)
+    val MQTT_CLIENT_ID: String =
+        System.getenv("MQTT_CLIENT_ID") ?: "HomeDisplay"
 }

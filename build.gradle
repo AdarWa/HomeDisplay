@@ -1,6 +1,7 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '2.3.0'
     id 'org.jetbrains.kotlin.plugin.serialization' version '2.3.0'
+    id 'org.jetbrains.kotlin.kapt' version '2.3.0'
     id "com.google.protobuf" version "0.9.6"
     id 'com.gradleup.shadow' version '9.3.2'
     id("com.diffplug.spotless") version "8.3.0"
@@ -31,6 +32,8 @@ dependencies {
     implementation "io.github.microutils:kotlin-logging-jvm:3.0.5"
     implementation 'org.reflections:reflections:0.10.2'
     implementation "org.jetbrains.kotlin:kotlin-reflect"
+
+    kapt project(':rpc-processor')
 
     testImplementation "org.jetbrains.kotlin:kotlin-test"
     testImplementation "org.junit.jupiter:junit-jupiter:5.10.0"
