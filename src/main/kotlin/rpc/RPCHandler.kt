@@ -36,7 +36,13 @@ object RPCHandler {
                     ?.toUByteArray(),
             tls = null,
         ) { publish ->
-            handleMessage(publish)
+            try {
+                handleMessage(publish)
+            } catch (exception: Exception) {
+                logger.error(exception) {
+                    "Unhandled exception while processing RPC message"
+                }
+            }
         }
 
     private val thread = Thread {
@@ -65,7 +71,7 @@ object RPCHandler {
     fun registeredEndpoints(): Map<String, Endpoint> = endpoints.toMap()
 
     private fun subscribeAll() {
-        client.subscribe(listOf(Subscription("HomeDisplay/rpc/#")))
+        client.subscribe(listOf(Subscription("HomeDisplay/rpc/request/#")))
     }
 
     private fun publishMessage(
@@ -84,10 +90,13 @@ object RPCHandler {
     private fun handleMessage(publish: MQTTPublish) {
         logger.info { "Received RPC message from topic ${publish.topicName}" }
         val fullTopic = publish.topicName
+        val match = pathRegex.find(fullTopic)
+        val rpcId = match?.groupValues?.getOrNull(1)
+        val remainingPath = match?.groupValues?.getOrNull(2)
         val topicName =
-            fullTopic.split("HomeDisplay/rpc/(\\d+)/").getOrNull(1)
+            remainingPath
                 ?: error(
-                    "Topic name does not match pattern(HomeDisplay/rpc/{id}/) '$fullTopic'"
+                    "Topic name does not match pattern(HomeDisplay/rpc/request/{id}/) '$fullTopic'"
                 )
         if (!endpoints.containsKey(topicName)) {
             logger.warn {
@@ -95,6 +104,8 @@ object RPCHandler {
             }
             return
         }
+
+
         val endpoint = endpoints[topicName]!!
         val msg =
             deserializeMessage(
@@ -103,9 +114,11 @@ object RPCHandler {
                 endpoint.inputType,
                 endpoint.isProtobuf,
             )
+
+
         val output = endpoint.function.call(msg)
         publishMessage(
-            fullTopic,
+            fullTopic.toResponsePath(),
             serializeMessage(
                 output as Any,
                 endpoint.outputType,

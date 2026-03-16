@@ -1,18 +1,16 @@
 package net.adarw.rpc.states
 
-import kotlinx.serialization.Serializable
-import net.adarw.build.ProtoGenerate
+import mu.KotlinLogging
+import net.adarw.rpc.HOST
 import net.adarw.rpc.RPCEndpoint
-import net.adarw.rpc.definitions.messages.Ping
-import net.adarw.rpc.definitions.messages.Pong
-import net.adarw.rpc.definitions.messages.RPCMessage
-import net.adarw.rpc.definitions.messages.RPCResponse
+import net.adarw.rpc.definitions.StatusCode
 import net.adarw.rpc.definitions.messages.RegisterMessage
+import net.adarw.rpc.definitions.messages.RegisterResponse
 
-@RPCEndpoint(RegisterMessage::class, Unit::class)
-fun registerDevice(msg: RegisterMessage) {}
+private val logger = KotlinLogging.logger {  }
 
-@RPCEndpoint(Ping::class, Pong::class)
-fun ping(msg: Ping): Pong {
-    return Pong(msg.str)
+@RPCEndpoint(RegisterMessage::class, RegisterResponse::class, isProtobuf = false)
+fun registerDevice(msg: RegisterMessage): RegisterResponse {
+    logger.info { "Registering Device with serial id ${msg.serialId}" }
+    return RegisterResponse(StatusCode.CREATED.code, HOST, )
 }
