@@ -1,17 +1,20 @@
-@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalSerializationApi::class)
+@file:OptIn(
+    ExperimentalUnsignedTypes::class,
+    ExperimentalSerializationApi::class,
+)
 
 package net.adarw.rpc
 
+import kotlin.reflect.KClass
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.protobuf.ProtoBuf
 import kotlinx.serialization.serializer
-import kotlin.reflect.KClass
 
 fun <T : Any> deserializeMessage(
     payload: UByteArray,
     inputType: KClass<T>,
-    isProtobuf: Boolean = true
+    isProtobuf: Boolean = true,
 ): T {
     val byteArray = payload.toByteArray()
 
@@ -23,21 +26,23 @@ fun <T : Any> deserializeMessage(
     } else {
         val jsonString = byteArray.decodeToString()
         Json.decodeFromString(serializer, jsonString)
-    } as T
+    }
+        as T
 }
 
 fun serializeMessage(
     msg: Any,
     outputType: KClass<*>,
-    isProtobuf: Boolean = true
+    isProtobuf: Boolean = true,
 ): UByteArray {
     val serializer = serializer(outputType.java)
 
-    val byteArray = if (isProtobuf) {
-        ProtoBuf.encodeToByteArray(serializer, msg)
-    } else {
-        Json.encodeToString(serializer, msg).encodeToByteArray()
-    }
+    val byteArray =
+        if (isProtobuf) {
+            ProtoBuf.encodeToByteArray(serializer, msg)
+        } else {
+            Json.encodeToString(serializer, msg).encodeToByteArray()
+        }
 
     return byteArray.toUByteArray()
 }

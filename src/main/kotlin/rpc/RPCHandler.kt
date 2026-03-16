@@ -5,9 +5,9 @@ import io.github.davidepianca98.mqtt.MQTTVersion
 import io.github.davidepianca98.mqtt.Subscription
 import io.github.davidepianca98.mqtt.packets.Qos
 import io.github.davidepianca98.mqtt.packets.mqtt.MQTTPublish
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlinx.serialization.ExperimentalSerializationApi
 import mu.KotlinLogging
 import net.adarw.config.Environment
 
@@ -17,6 +17,7 @@ data class Endpoint(
     val outputType: KClass<*>,
     val isProtobuf: Boolean,
 )
+
 @OptIn(ExperimentalUnsignedTypes::class, ExperimentalSerializationApi::class)
 object RPCHandler {
     private val logger = KotlinLogging.logger {}
@@ -38,7 +39,15 @@ object RPCHandler {
             handleMessage(publish)
         }
 
+    private val thread = Thread {
+        logger.info { "Starting MQTT5 client..." }
+        client.run()
+    }.apply {
+        name = "mqtt"
+    }
+
     init {
+        thread.start()
         RPCRegistry.registerAll()
         subscribeAll()
     }
@@ -59,14 +68,27 @@ object RPCHandler {
         client.subscribe(listOf(Subscription("HomeDisplay/rpc/#")))
     }
 
-    private fun publishMessage(topic: String, payload: UByteArray, checkDelivery: Boolean = false){
-        client.publish(false, if (checkDelivery) Qos.EXACTLY_ONCE else Qos.AT_MOST_ONCE, topic, payload)
+    private fun publishMessage(
+        topic: String,
+        payload: UByteArray,
+        checkDelivery: Boolean = false,
+    ) {
+        client.publish(
+            false,
+            if (checkDelivery) Qos.EXACTLY_ONCE else Qos.AT_MOST_ONCE,
+            topic,
+            payload,
+        )
     }
 
     private fun handleMessage(publish: MQTTPublish) {
         logger.info { "Received RPC message from topic ${publish.topicName}" }
         val fullTopic = publish.topicName
-        val topicName = fullTopic.split("HomeDisplay/rpc/(\\d+)/").getOrNull(1) ?: error("Topic name does not match pattern(HomeDisplay/rpc/{id}/) '$fullTopic'")
+        val topicName =
+            fullTopic.split("HomeDisplay/rpc/(\\d+)/").getOrNull(1)
+                ?: error(
+                    "Topic name does not match pattern(HomeDisplay/rpc/{id}/) '$fullTopic'"
+                )
         if (!endpoints.containsKey(topicName)) {
             logger.warn {
                 "Received a message not on a registered endpoint $fullTopic"
@@ -74,8 +96,21 @@ object RPCHandler {
             return
         }
         val endpoint = endpoints[topicName]!!
-        val msg = deserializeMessage(publish.payload ?: error("Message received on topic $fullTopic is empty"), endpoint.inputType, endpoint.isProtobuf)
+        val msg =
+            deserializeMessage(
+                publish.payload
+                    ?: error("Message received on topic $fullTopic is empty"),
+                endpoint.inputType,
+                endpoint.isProtobuf,
+            )
         val output = endpoint.function.call(msg)
-        publishMessage(fullTopic, serializeMessage(output as Any, endpoint.outputType, endpoint.isProtobuf))
+        publishMessage(
+            fullTopic,
+            serializeMessage(
+                output as Any,
+                endpoint.outputType,
+                endpoint.isProtobuf,
+            ),
+        )
     }
 }

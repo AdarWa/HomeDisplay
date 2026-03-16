@@ -15,3 +15,13 @@ data class RPCError(
     override val senderId: Int,
     val cause: String,
 ) : RPCMessage()
+
+@Serializable
+data class Ping(
+    val str: String
+)
+
+@Serializable
+data class Pong(
+    val echo: String
+)
