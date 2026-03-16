@@ -8,5 +8,5 @@ annotation class RPCEndpoint(
     val inputType: KClass<*>,
     val outputType: KClass<*>,
     val topic: String = "",
-    val isProtobuf: Boolean = true
+    val isProtobuf: Boolean = true,
 )

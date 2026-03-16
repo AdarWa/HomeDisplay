@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="HomeDisplayServer [build]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
+  <configuration default="false" name="HomeDisplay [spotlessApply build]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -10,6 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
+          <option value="spotlessApply" />
           <option value="build" />
         </list>
       </option>

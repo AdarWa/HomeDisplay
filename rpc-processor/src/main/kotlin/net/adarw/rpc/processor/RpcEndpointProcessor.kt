@@ -7,14 +7,14 @@ import javax.annotation.processing.SupportedAnnotationTypes
 import javax.annotation.processing.SupportedOptions
 import javax.annotation.processing.SupportedSourceVersion
 import javax.lang.model.SourceVersion
+import javax.lang.model.element.AnnotationMirror
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
-import javax.lang.model.element.AnnotationMirror
-import javax.tools.Diagnostic
 import javax.lang.model.type.TypeKind
 import javax.lang.model.type.TypeMirror
+import javax.tools.Diagnostic
 
 @SupportedOptions(RpcEndpointProcessor.KAPT_KOTLIN_GENERATED)
 @SupportedAnnotationTypes("net.adarw.rpc.RPCEndpoint")
@@ -81,7 +81,7 @@ class RpcEndpointProcessor : AbstractProcessor() {
         val packageName = processingEnv.elementUtils.getPackageOf(element).qualifiedName.toString()
         val className = enclosingType.simpleName.toString()
         val functionName = element.simpleName.toString()
-        val topic = resolveTopic(element) ?: functionName
+        val topic = resolveTopic(element).takeIf { it?.isNotEmpty() ?: false } ?: functionName
 
         // KAPT compiles top-level Kotlin functions as STATIC methods
         val isTopLevel = element.modifiers.contains(Modifier.STATIC)
@@ -134,15 +134,18 @@ class RpcEndpointProcessor : AbstractProcessor() {
             functionName = functionName,
             topic = topic,
             isTopLevel = isTopLevel,
-            isProtobuf = isProtobuf != false
+            isProtobuf = isProtobuf != false,
+            inputType = inputType?.toString(),
+            outputType = outputType?.toString()
         )
     }
 
     private fun resolveTopic(element: ExecutableElement): String? {
         val annotation = findAnnotation(element) ?: return null
+        val valuesMap = processingEnv.elementUtils.getElementValuesWithDefaults(annotation)
 
         val topicEntry =
-            annotation.elementValues.entries.firstOrNull { entry ->
+            valuesMap.entries.firstOrNull { entry ->
                 entry.key.simpleName.toString() == "topic"
             } ?: return null
 
@@ -160,8 +163,9 @@ class RpcEndpointProcessor : AbstractProcessor() {
         name: String,
     ): TypeMirror? {
         if (annotation == null) return null
+        val valuesMap = processingEnv.elementUtils.getElementValuesWithDefaults(annotation)
         val entry =
-            annotation.elementValues.entries.firstOrNull { it.key.simpleName.toString() == name }
+            valuesMap.entries.firstOrNull { it.key.simpleName.toString() == name }
                 ?: return null
         return entry.value.value as? TypeMirror
     }
@@ -171,8 +175,9 @@ class RpcEndpointProcessor : AbstractProcessor() {
         name: String,
     ): Boolean? {
         if (annotation == null) return null
+        val valuesMap = processingEnv.elementUtils.getElementValuesWithDefaults(annotation)
         val entry =
-            annotation.elementValues.entries.firstOrNull { it.key.simpleName.toString() == name }
+            valuesMap.entries.firstOrNull { it.key.simpleName.toString() == name }
                 ?: return null
         return entry.value.value as? Boolean
     }
@@ -223,7 +228,12 @@ class RpcEndpointProcessor : AbstractProcessor() {
                 } else {
                     "${endpoint.className}::${endpoint.functionName}"
                 }
-                builder.appendLine("        RPCHandler.register(\"${endpoint.topic}\", $reference, ${endpoint.inputType}, ${endpoint.outputType}, ${endpoint.isProtobuf})")
+
+                // Format type mirrors as Kotlin class references
+                val inTypeRender = endpoint.inputType?.let { "$it::class" } ?: "null"
+                val outTypeRender = endpoint.outputType?.let { "$it::class" } ?: "null"
+
+                builder.appendLine("        RPCHandler.register(\"${endpoint.topic}\", $reference, $inTypeRender, $outTypeRender, ${endpoint.isProtobuf})")
             }
             builder.appendLine("    }")
         }
@@ -238,5 +248,7 @@ class RpcEndpointProcessor : AbstractProcessor() {
         val topic: String,
         val isTopLevel: Boolean,
         val isProtobuf: Boolean,
+        val inputType: String?,
+        val outputType: String?
     )
 }
