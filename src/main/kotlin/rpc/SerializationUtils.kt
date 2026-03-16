@@ -48,8 +48,11 @@ fun serializeMessage(
 }
 
 fun String.toResponsePath(): String {
-    val match = pathRegex.find(this)
-        ?: error("Invalid request path: '$this'. Expected format: HomeDisplay/rpc/request/{id}/{path}")
+    val match =
+        pathRegex.find(this)
+            ?: error(
+                "Invalid request path: '$this'. Expected format: HomeDisplay/rpc/request/{id}/{path}"
+            )
 
     val (id, tail) = match.destructured
     return "HomeDisplay/rpc/response/$id/$tail"

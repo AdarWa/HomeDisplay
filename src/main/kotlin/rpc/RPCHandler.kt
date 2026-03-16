@@ -45,12 +45,12 @@ object RPCHandler {
             }
         }
 
-    private val thread = Thread {
-        logger.info { "Starting MQTT5 client..." }
-        client.run()
-    }.apply {
-        name = "mqtt"
-    }
+    private val thread =
+        Thread {
+                logger.info { "Starting MQTT5 client..." }
+                client.run()
+            }
+            .apply { name = "mqtt" }
 
     init {
         thread.start()
@@ -105,7 +105,6 @@ object RPCHandler {
             return
         }
 
-
         val endpoint = endpoints[topicName]!!
         val msg =
             deserializeMessage(
@@ -114,7 +113,6 @@ object RPCHandler {
                 endpoint.inputType,
                 endpoint.isProtobuf,
             )
-
 
         val output = endpoint.function.call(msg)
         publishMessage(
