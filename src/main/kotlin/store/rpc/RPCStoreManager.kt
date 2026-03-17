@@ -28,9 +28,7 @@ object RPCStoreManager {
     }
 
     fun idExists(id: Int): Boolean = transaction {
-        RPCStore.selectAll()
-            .where { RPCStore.id eq id }
-            .count() > 0
+        RPCStore.selectAll().where { RPCStore.id eq id }.count() > 0
     }
 
     fun getRawConfig(id: Int): String = transaction {

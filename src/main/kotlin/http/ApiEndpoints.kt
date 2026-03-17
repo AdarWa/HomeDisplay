@@ -9,40 +9,58 @@ fun loadDefinitions() = Unit
 
 const val TBD = "Not Implemented Yet"
 
-val fetchDevices = HttpEndpoint {
-    it.requireMethod(HttpMethod.GET)
-    it.sendResponse(StatusCode.OK, TBD + "DASDSA")
-}.registerEndpoint("/api/devices/fetch")
+val fetchDevices =
+    HttpEndpoint {
+            it.requireMethod(HttpMethod.GET)
+            it.sendResponse(StatusCode.OK, TBD + "DASDSA")
+        }
+        .registerEndpoint("/api/devices/fetch")
 
-val pingDevice = HttpEndpoint {
-    it.requireMethod(HttpMethod.POST)
-    it.sendResponse(StatusCode.OK, TBD)
-}.registerEndpoint("/api/devices/ping")
+val pingDevice =
+    HttpEndpoint {
+            it.requireMethod(HttpMethod.POST)
+            it.sendResponse(StatusCode.OK, TBD)
+        }
+        .registerEndpoint("/api/devices/ping")
 
-val syncDevice = HttpEndpoint {
-    it.requireMethod(HttpMethod.POST)
-    it.sendResponse(StatusCode.OK, TBD)
-}.registerEndpoint("/api/devices/sync")
+val syncDevice =
+    HttpEndpoint {
+            it.requireMethod(HttpMethod.POST)
+            it.sendResponse(StatusCode.OK, TBD)
+        }
+        .registerEndpoint("/api/devices/sync")
 
-val rebootDevice = HttpEndpoint {
-    it.requireMethod(HttpMethod.POST)
-    it.sendResponse(StatusCode.OK, TBD)
-}.registerEndpoint("/api/devices/reboot")
+val rebootDevice =
+    HttpEndpoint {
+            it.requireMethod(HttpMethod.POST)
+            it.sendResponse(StatusCode.OK, TBD)
+        }
+        .registerEndpoint("/api/devices/reboot")
 
-val updateDeviceConfig = HttpEndpoint {
-    it.requireMethod(HttpMethod.POST)
-    val json = it.getJsonPayload()
-    val id = json.jsonObject["id"]?.jsonPrimitive?.content?.toInt() ?: error("No id present in update config request")
-    val config = json.jsonObject["config"]?.jsonPrimitive?.content ?: error("No config present in update config request")
+val updateDeviceConfig =
+    HttpEndpoint {
+            it.requireMethod(HttpMethod.POST)
+            val json = it.getJsonPayload()
+            val id =
+                json.jsonObject["id"]?.jsonPrimitive?.content?.toInt()
+                    ?: error("No id present in update config request")
+            val config =
+                json.jsonObject["config"]?.jsonPrimitive?.content
+                    ?: error("No config present in update config request")
 
-    require(RPCStoreManager.idExists(id)) { "Id $id doesn't exists in RPC store, Try registering it first." }
+            require(RPCStoreManager.idExists(id)) {
+                "Id $id doesn't exists in RPC store, Try registering it first."
+            }
 
-    RPCStoreManager.setRawConfig(id, config)
+            RPCStoreManager.setRawConfig(id, config)
 
-    it.sendResponse(StatusCode.OK, "OK")
-}.registerEndpoint("/api/devices/updateDeviceConfig")
+            it.sendResponse(StatusCode.OK, "OK")
+        }
+        .registerEndpoint("/api/devices/updateDeviceConfig")
 
-val deleteDevice = HttpEndpoint {
-    it.requireMethod(HttpMethod.DELETE)
-    it.sendResponse(StatusCode.OK, TBD)
-}.registerEndpoint("/api/devices/deleteDevice")
+val deleteDevice =
+    HttpEndpoint {
+            it.requireMethod(HttpMethod.DELETE)
+            it.sendResponse(StatusCode.OK, TBD)
+        }
+        .registerEndpoint("/api/devices/deleteDevice")
