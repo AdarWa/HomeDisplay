@@ -1,0 +1,32 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '2.3.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.3.0'
+    id 'application'
+}
+
+group = 'net.adarw'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation project(':')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-protobuf"
+    implementation 'com.google.protobuf:protobuf-java:4.28.2'
+    implementation 'com.google.protobuf:protobuf-kotlin:4.28.2'
+    implementation("io.github.davidepianca98:kmqtt-common-jvm:1.0.0")
+    implementation("io.github.davidepianca98:kmqtt-client-jvm:1.0.0")
+}
+
+compileKotlin {
+    kotlinOptions { jvmTarget = "17" }
+}
+
+application {
+    mainClass = 'net.adarw.rpc.client.gui.RPCTestClientGui'
+}
