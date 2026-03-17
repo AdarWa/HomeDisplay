@@ -22,11 +22,9 @@ fun registerDevice(msg: RegisterMessage): RegisterResponse {
         }
         return RegisterResponse(StatusCode.BAD_REQUEST.code, HOST, -1)
     }
-    if (RPCStoreManager.serialIdExists(msg.serialId)) {
-        logger.error {
-            "serialId ${msg.serialId} already exists in the registry!"
-        }
-        return RegisterResponse(StatusCode.CONFLICT.code, HOST, -1)
+    val serialExists = RPCStoreManager.serialIdExists(msg.serialId)
+    if (serialExists != null) {
+        return RegisterResponse(StatusCode.OK.code, HOST, serialExists)
     }
     val rpcId = RPCStoreManager.registerRPC(msg.serialId)
     logger.info {
