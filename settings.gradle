@@ -3,4 +3,4 @@ plugins {
 }
 rootProject.name = 'HomeDisplay'
 
-include('rpc-processor')
+include('rpc-processor', 'rpc-test-client')
