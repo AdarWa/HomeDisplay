@@ -23,16 +23,16 @@ const request = async (path, options = {}) => {
 
 export const fetchDevices = () => request('');
 
-export const pingDevice = (deviceId) => request(`/${deviceId}/ping`, { method: 'POST' });
+export const pingDevice = (deviceId) => request(`/ping`, { method: 'POST', body: JSON.stringify({ id: deviceId}) });
 
-export const syncDevice = (deviceId) => request(`/${deviceId}/sync`, { method: 'POST' });
+export const syncDevice = (deviceId) => request(`/sync`, { method: 'POST', body: JSON.stringify({ id: deviceId}) });
 
-export const rebootDevice = (deviceId) => request(`/${deviceId}/reboot`, { method: 'POST' });
+export const rebootDevice = (deviceId) => request(`/reboot`, { method: 'POST', body: JSON.stringify({ id: deviceId}) });
 
 export const updateDeviceConfig = (deviceId, config) =>
-  request(`/${deviceId}/config`, {
+  request(`/config`, {
     method: 'PUT',
-    body: JSON.stringify({ config }),
+    body: JSON.stringify({ config: config, id: deviceId }),
   });
 
 export const deleteDevice = (deviceId) => request(`/${deviceId}`, { method: 'DELETE' });
