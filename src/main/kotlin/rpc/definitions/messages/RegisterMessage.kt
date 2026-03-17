@@ -16,4 +16,5 @@ data class RegisterMessage(
 data class RegisterResponse(
     override val statusCode: Int,
     override val senderId: Int,
+    val givenId: Int,
 ) : RPCResponse()

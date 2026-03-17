@@ -17,11 +17,9 @@ data class RPCError(
 ) : RPCMessage()
 
 @Serializable
-data class Ping(
-    val str: String
-)
+data class RPCStatus(override val statusCode: Int, override val senderId: Int) :
+    RPCMessage()
 
-@Serializable
-data class Pong(
-    val echo: String
-)
+@Serializable data class Ping(val str: String)
+
+@Serializable data class Pong(val echo: String)
