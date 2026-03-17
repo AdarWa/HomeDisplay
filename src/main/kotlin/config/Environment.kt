@@ -50,4 +50,5 @@ object Environment {
     val MQTT_AUTH = Credentials.fromAuthorityString(connectionUri.userInfo)
     val MQTT_CLIENT_ID: String =
         System.getenv("MQTT_CLIENT_ID") ?: "HomeDisplay"
+    val HTTP_PORT: Int = System.getenv("HTTP_PORT")?.toInt() ?: 8124
 }
