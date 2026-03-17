@@ -5,6 +5,7 @@ import org.jetbrains.exposed.v1.core.Table
 object RPCStore : Table("rpc_store") {
     val id = integer("id").autoIncrement()
     val serialId = text("serialId").uniqueIndex()
+    val config = text("config")
 
     override val primaryKey = PrimaryKey(id)
 }
