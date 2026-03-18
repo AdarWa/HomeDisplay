@@ -1,8 +1,7 @@
 package net.adarw.http
 
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import net.adarw.rpc.definitions.StatusCode
+import net.adarw.serialization.AppSerialization
 import net.adarw.store.rpc.RPCStoreManager
 
 fun loadDefinitions() = Unit
@@ -12,7 +11,7 @@ const val TBD = "Not Implemented Yet"
 val fetchDevices =
     HttpEndpoint {
             it.requireMethod(HttpMethod.GET)
-            it.sendResponse(StatusCode.OK, TBD)
+            it.sendResponse(StatusCode.OK, AppSerialization.json.encodeToString(RPCStoreManager.getAllNodes()))
         }
         .registerEndpoint("/api/devices/fetch")
 
@@ -39,14 +38,10 @@ val rebootDevice =
 
 val updateDeviceConfig =
     HttpEndpoint {
-            it.requireMethod(HttpMethod.POST)
+            it.requireMethod(HttpMethod.PUT)
             val json = it.getJsonPayload()
-            val id =
-                json.jsonObject["id"]?.jsonPrimitive?.content?.toInt()
-                    ?: error("No id present in update config request")
-            val config =
-                json.jsonObject["config"]?.jsonPrimitive?.content
-                    ?: error("No config present in update config request")
+            val id = json.getInt("id")
+            val config = json.getString("config")
 
             require(RPCStoreManager.idExists(id)) {
                 "Id $id doesn't exists in RPC store, Try registering it first."
@@ -54,13 +49,18 @@ val updateDeviceConfig =
 
             RPCStoreManager.setRawConfig(id, config)
 
-            it.sendResponse(StatusCode.OK, "OK")
+            it.sendOk()
         }
-        .registerEndpoint("/api/devices/updateDeviceConfig")
+        .registerEndpoint("/api/devices/updateConfig")
 
 val deleteDevice =
     HttpEndpoint {
             it.requireMethod(HttpMethod.DELETE)
-            it.sendResponse(StatusCode.OK, TBD)
+            val id = it.getJsonPayload().getInt("id")
+            require(RPCStoreManager.idExists(id)) {
+                "Id $id doesn't exists in RPC store, Try registering it first."
+            }
+            require(RPCStoreManager.delete(id)) { "Deletion has failed for id $id" }
+            it.sendOk()
         }
-        .registerEndpoint("/api/devices/deleteDevice")
+        .registerEndpoint("/api/devices/delete")
