@@ -41,7 +41,6 @@ const handleManageClick = (device) => {
     @row-click="handleRowClick"
   >
     <Column field="name" header="Device" />
-    <Column field="ip" header="IP Address" />
     <Column header="Status">
       <template #body="{ data }">
         <Tag :severity="statusSeverity(data.status)" :value="data.status" />

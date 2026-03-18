@@ -1,9 +1,7 @@
 <template>
   <header class="dashboard-header">
     <div>
-      <p class="eyebrow">HomeDisplay</p>
-      <h1>Device Fleet Dashboard</h1>
-      <p class="subtitle">Track every HomeDisplay node and jump into management actions.</p>
+      <h1>Device Dashboard</h1>
     </div>
   </header>
 </template>

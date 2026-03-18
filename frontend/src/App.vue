@@ -24,14 +24,11 @@ const configVisible = ref(false);
 const selectedDevice = ref(null);
 const configDraft = ref('');
 
-const onlineCount = computed(() => devices.value.filter((device) => device.status === 'Online').length);
-const offlineCount = computed(() => devices.value.filter((device) => device.status === 'Offline').length);
-
 const statusSeverity = (status) => {
   switch (status) {
-    case 'Online':
+    case 'ONLINE':
       return 'success';
-    case 'Offline':
+    case 'OFFLINE':
       return 'danger';
     default:
       return 'info';
@@ -77,7 +74,7 @@ const pingDevice = async () => {
   if (!updated && errorMessage.value) {
     return;
   }
-  updateSelectedDevice(updated || { status: 'Online', lastSeen: new Date().toLocaleString() });
+  updateSelectedDevice(updated);
 };
 
 const rebootDevice = async () => {
@@ -169,7 +166,6 @@ onMounted(loadDevices);
     <section class="dashboard-grid">
       <Card class="device-card">
         <template #title>Devices</template>
-        <template #subtitle>Click a device row or manage button to open actions.</template>
         <template #content>
           <Message v-if="errorMessage" severity="error" class="error-message">
             {{ errorMessage }}
