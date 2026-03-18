@@ -5,8 +5,11 @@ import com.sun.net.httpserver.HttpHandler
 import java.io.InputStream
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import mu.KotlinLogging
 import net.adarw.rpc.definitions.StatusCode
+import net.adarw.serialization.AppSerialization
 
 private val logger = KotlinLogging.logger {}
 
@@ -91,6 +94,8 @@ fun HttpExchange.sendResponse(statusCode: StatusCode, response: String) {
     responseBody.use { os -> os.write(response.toByteArray()) }
 }
 
+fun HttpExchange.sendOk() = sendResponse(StatusCode.OK, "{\"status\": \"ok\"}")
+
 fun HttpExchange.requireMethod(method: HttpMethod) {
     val valid = requestMethod == method.value
     if (!valid) {
@@ -108,7 +113,7 @@ fun HttpExchange.getPayload(): String =
     requestBody.bufferedReader().use { it.readText() }
 
 fun HttpExchange.getJsonPayload(): JsonElement =
-    Json.parseToJsonElement(getPayload())
+    AppSerialization.json.parseToJsonElement(getPayload())
 
 fun HttpHandler.registerEndpoint(path: String) =
     HttpManager.server.createContext(path, this)
@@ -138,3 +143,9 @@ fun HttpEndpoint(handler: (HttpExchange) -> Unit): HttpHandler =
             exchange.close()
         }
     }
+
+fun JsonElement.getInt(key: String): Int = jsonObject[key]?.jsonPrimitive?.content?.toInt()
+    ?: error("No $key present in json payload")
+
+fun JsonElement.getString(key: String): String = jsonObject[key]?.jsonPrimitive?.content
+    ?: error("No $key present in json payload")
