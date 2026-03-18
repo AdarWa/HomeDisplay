@@ -11,7 +11,12 @@ const val TBD = "Not Implemented Yet"
 val fetchDevices =
     HttpEndpoint {
             it.requireMethod(HttpMethod.GET)
-            it.sendResponse(StatusCode.OK, AppSerialization.json.encodeToString(RPCStoreManager.getAllNodes()))
+            it.sendResponse(
+                StatusCode.OK,
+                AppSerialization.json.encodeToString(
+                    RPCStoreManager.getAllNodes()
+                ),
+            )
         }
         .registerEndpoint("/api/devices/fetch")
 
@@ -60,7 +65,9 @@ val deleteDevice =
             require(RPCStoreManager.idExists(id)) {
                 "Id $id doesn't exists in RPC store, Try registering it first."
             }
-            require(RPCStoreManager.delete(id)) { "Deletion has failed for id $id" }
+            require(RPCStoreManager.delete(id)) {
+                "Deletion has failed for id $id"
+            }
             it.sendOk()
         }
         .registerEndpoint("/api/devices/delete")

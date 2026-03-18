@@ -3,7 +3,6 @@ package net.adarw.http
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpHandler
 import java.io.InputStream
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -144,8 +143,10 @@ fun HttpEndpoint(handler: (HttpExchange) -> Unit): HttpHandler =
         }
     }
 
-fun JsonElement.getInt(key: String): Int = jsonObject[key]?.jsonPrimitive?.content?.toInt()
-    ?: error("No $key present in json payload")
+fun JsonElement.getInt(key: String): Int =
+    jsonObject[key]?.jsonPrimitive?.content?.toInt()
+        ?: error("No $key present in json payload")
 
-fun JsonElement.getString(key: String): String = jsonObject[key]?.jsonPrimitive?.content
-    ?: error("No $key present in json payload")
+fun JsonElement.getString(key: String): String =
+    jsonObject[key]?.jsonPrimitive?.content
+        ?: error("No $key present in json payload")

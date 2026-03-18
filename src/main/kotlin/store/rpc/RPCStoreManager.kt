@@ -1,14 +1,14 @@
 package net.adarw.store.rpc
 
+import java.time.Instant as JavaInstant
+import kotlin.time.Instant
+import kotlin.time.toKotlinInstant
 import kotlinx.serialization.Serializable
 import net.adarw.store.DatabaseManager
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.*
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import kotlin.time.Instant
-import java.time.Instant as JavaInstant
-import kotlin.time.toKotlinInstant
 
 @Serializable
 data class RpcNode(
@@ -17,7 +17,7 @@ data class RpcNode(
     val name: String,
     val status: Status,
     val lastSeen: Instant,
-    val config: String
+    val config: String,
 )
 
 object RPCStoreManager {
@@ -27,16 +27,21 @@ object RPCStoreManager {
         transaction { SchemaUtils.create(RPCStore) }
     }
 
-    private fun ResultRow.toRpcNode() = RpcNode(
-        id = this[RPCStore.id],
-        serialId = this[RPCStore.serialId],
-        name = this[RPCStore.name],
-        status = this[RPCStore.status],
-        lastSeen = this[RPCStore.lastSeen].toKotlinInstant(),
-        config = this[RPCStore.config]
-    )
+    private fun ResultRow.toRpcNode() =
+        RpcNode(
+            id = this[RPCStore.id],
+            serialId = this[RPCStore.serialId],
+            name = this[RPCStore.name],
+            status = this[RPCStore.status],
+            lastSeen = this[RPCStore.lastSeen].toKotlinInstant(),
+            config = this[RPCStore.config],
+        )
 
-    fun registerRPC(serialId: String, name: String = "Unnamed Node", config: String = ""): Int = transaction {
+    fun registerRPC(
+        serialId: String,
+        name: String = "Unnamed Node",
+        config: String = "",
+    ): Int = transaction {
         RPCStore.insert {
             it[RPCStore.serialId] = serialId
             it[RPCStore.name] = name
@@ -49,19 +54,24 @@ object RPCStoreManager {
     }
 
     fun getNodeById(id: Int): RpcNode? = transaction {
-        RPCStore.selectAll().where { RPCStore.id eq id }
-            .singleOrNull()?.toRpcNode()
+        RPCStore.selectAll()
+            .where { RPCStore.id eq id }
+            .singleOrNull()
+            ?.toRpcNode()
     }
 
     fun getNodeBySerial(serialId: String): RpcNode? = transaction {
-        RPCStore.selectAll().where { RPCStore.serialId eq serialId }
-            .singleOrNull()?.toRpcNode()
+        RPCStore.selectAll()
+            .where { RPCStore.serialId eq serialId }
+            .singleOrNull()
+            ?.toRpcNode()
     }
 
     fun serialIdExists(serialId: String): Int? = transaction {
         RPCStore.select(RPCStore.id)
             .where { RPCStore.serialId eq serialId }
-            .singleOrNull()?.get(RPCStore.id)
+            .singleOrNull()
+            ?.get(RPCStore.id)
     }
 
     fun idExists(id: Int): Boolean = transaction {
@@ -71,7 +81,8 @@ object RPCStoreManager {
     fun getRawConfig(id: Int): String? = transaction {
         RPCStore.select(RPCStore.config)
             .where { RPCStore.id eq id }
-            .singleOrNull()?.get(RPCStore.config)
+            .singleOrNull()
+            ?.get(RPCStore.config)
     }
 
     fun setRawConfig(id: Int, config: String): Boolean = transaction {
@@ -81,9 +92,8 @@ object RPCStoreManager {
     }
 
     fun setName(id: Int, newName: String): Boolean = transaction {
-        RPCStore.update({ RPCStore.id eq id }) {
-            it[RPCStore.name] = newName
-        } > 0
+        RPCStore.update({ RPCStore.id eq id }) { it[RPCStore.name] = newName } >
+            0
     }
 
     fun setStatus(id: Int, newStatus: Status): Boolean = transaction {
