@@ -12,7 +12,7 @@ const val TBD = "Not Implemented Yet"
 val fetchDevices =
     HttpEndpoint {
             it.requireMethod(HttpMethod.GET)
-            it.sendResponse(StatusCode.OK, TBD + "DASDSA")
+            it.sendResponse(StatusCode.OK, TBD)
         }
         .registerEndpoint("/api/devices/fetch")
 
