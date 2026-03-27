@@ -21,6 +21,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-protobuf"
+    implementation "net.mamoe.yamlkt:yamlkt:0.13.0"
     implementation 'com.google.protobuf:protobuf-java:4.28.2'
     implementation 'com.google.protobuf:protobuf-kotlin:4.28.2'
     implementation("io.github.davidepianca98:kmqtt-common-jvm:1.0.0")
