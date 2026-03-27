@@ -36,7 +36,10 @@ fun defaultConfig(): Config {
                 "toggle_living_room_light",
                 ToggleValueAction(livingRoomLight),
             ),
-            NamedAction("toggle_kitchen_light", ToggleValueAction(kitchenLight)),
+            NamedAction(
+                "toggle_kitchen_light",
+                ToggleValueAction(kitchenLight),
+            ),
             NamedAction(
                 "increase_setpoint",
                 IncrementValueAction(
@@ -54,17 +57,11 @@ fun defaultConfig(): Config {
             NamedAction("toggle_sleep_mode", ToggleValueAction(sleepMode)),
             NamedAction(
                 "increase_brightness",
-                IncrementValueAction(
-                    displayBrightness,
-                    StateValue.IntValue(10),
-                ),
+                IncrementValueAction(displayBrightness, StateValue.IntValue(10)),
             ),
             NamedAction(
                 "decrease_brightness",
-                DecrementValueAction(
-                    displayBrightness,
-                    StateValue.IntValue(10),
-                ),
+                DecrementValueAction(displayBrightness, StateValue.IntValue(10)),
             ),
         )
 
@@ -168,7 +165,8 @@ fun defaultConfig(): Config {
                                     listOf(
                                         EventHandler(
                                             trigger = EventType.CLICKED,
-                                            actionId = "toggle_living_room_light",
+                                            actionId =
+                                                "toggle_living_room_light",
                                         )
                                     ),
                             ),

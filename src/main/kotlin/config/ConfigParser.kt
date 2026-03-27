@@ -13,28 +13,28 @@ data class Config(
     val internalStates: List<StateDefinition>,
     val actions: List<NamedAction>,
     val definedComponents: List<DefinedComponent>,
-    val screens: List<Screen>
+    val screens: List<Screen>,
 )
 
 @Serializable
 data class SimplifiedConfig(
     val internalStates: List<StateDefinition>,
     val actions: List<NamedAction>,
-    val screens: List<Screen>
+    val screens: List<Screen>,
 )
 
-fun parseConfig(config: String) = Yaml.decodeFromString(Config.serializer(), config)
+fun parseConfig(config: String) =
+    Yaml.decodeFromString(Config.serializer(), config)
 
 fun parseSimplifiedConfig(config: String): SimplifiedConfig =
     parseConfig(config).toSimplifiedConfig()
 
-fun encodeSimplifiedConfig(config: SimplifiedConfig) = Yaml.encodeToString(SimplifiedConfig.serializer(), config)
+fun encodeSimplifiedConfig(config: SimplifiedConfig) =
+    Yaml.encodeToString(SimplifiedConfig.serializer(), config)
 
 fun Config.toSimplifiedConfig(): SimplifiedConfig {
     val componentDefinitions =
-        definedComponents
-            .filter { it.name != null }
-            .associateBy { it.name!! }
+        definedComponents.filter { it.name != null }.associateBy { it.name!! }
 
     val resolvedScreens =
         screens.map { screen ->
@@ -44,7 +44,7 @@ fun Config.toSimplifiedConfig(): SimplifiedConfig {
                         is NamedComponent ->
                             componentDefinitions[component.name]
                                 ?: error(
-                                    "No defined component found for name '${component.name}'",
+                                    "No defined component found for name '${component.name}'"
                                 )
                         is DefinedComponent -> component
                     }
@@ -59,4 +59,5 @@ fun Config.toSimplifiedConfig(): SimplifiedConfig {
     )
 }
 
-fun encodeConfig(config: Config) = Yaml.encodeToString(Config.serializer(), config)
+fun encodeConfig(config: Config) =
+    Yaml.encodeToString(Config.serializer(), config)
